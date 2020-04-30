@@ -12,7 +12,16 @@ class App extends React.Component {
 		this.state = {
 			todos: [],
 		};
+		this.getData();
 	}
+
+	getData = async () => {
+		const response = await fetch(`http://localhost:5000/todos/`);
+		const data = await response.json();
+		console.log(data);
+		this.setState({ todos: data });
+		return data;
+	};
 
 	toggleComplete = (id) => {
 		this.setState({

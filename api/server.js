@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require("uuid");
 // uuidv4();
 
 const PORT = 5000;
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "..", "client", "public")));
 
 app.use(cors());
 
@@ -30,7 +30,13 @@ client.connect((err) => {
 });
 
 app.get("/todo", (req, res) => {
-	res.send("Hello");
+	const collection = client.db("todos").collection("user1");
+	collection
+		.find()
+		.toArray()
+		.then((searches) => {
+			res.send(searches);
+		});
 });
 
 app.listen(PORT, () => {

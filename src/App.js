@@ -10,13 +10,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			todos: [
-				{
-					id: 1,
-					title: "Example",
-					completed: false,
-				},
-			],
+			todos: [],
 		};
 	}
 

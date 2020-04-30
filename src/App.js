@@ -15,6 +15,10 @@ class App extends React.Component {
 	}
 
 	async componentDidMount() {
+		this.getData();
+	}
+
+	async getData() {
 		const response = await fetch(`http://localhost:5000`);
 		const data = await response.json();
 		this.setState({ todos: data });
@@ -48,6 +52,7 @@ class App extends React.Component {
 				title: title,
 			}),
 		});
+		this.getData();
 	};
 
 	refreshPage = () => {

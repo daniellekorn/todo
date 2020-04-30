@@ -10,28 +10,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			todos: [
-				{
-					id: uuid(),
-					title: "Walk the dog",
-					completed: false,
-				},
-				{
-					id: uuid(),
-					title: "Programming  practice",
-					completed: false,
-				},
-				{
-					id: uuid(),
-					title: "Take out the trash",
-					completed: false,
-				},
-				{
-					id: uuid(),
-					title: "Exercise",
-					completed: true,
-				},
-			],
+			todos: [],
 		};
 	}
 

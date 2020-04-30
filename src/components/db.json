@@ -1,0 +1,22 @@
+[
+	{
+		"id": 1,
+		"title": "Walk the dog",
+		"completed": false
+	},
+	{
+		"id": 2,
+		"title": "Programming  practice",
+		"completed": false
+	},
+	{
+		"id": 3,
+		"title": "Take out the trash",
+		"completed": false
+	},
+	{
+		"id": 4,
+		"title": "Exercise",
+		"completed": true
+	}
+]

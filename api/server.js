@@ -1,10 +1,8 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
 const path = require("path");
 const key = require("./key");
-const { v4: uuidv4 } = require("uuid");
-// uuidv4();
+const app = express();
 
 const PORT = 5000;
 app.use(express.static(path.join(__dirname, "..", "client", "public")));

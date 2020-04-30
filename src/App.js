@@ -71,7 +71,7 @@ class App extends React.Component {
 	render() {
 		return (
 			<div className="text-center row">
-				<div className="col-md-12">
+				<div className="col-md-12 justify-items-center">
 					<AddTodo addTodo={this.addTodo}></AddTodo>
 					<Reset refreshPage={this.refreshPage}></Reset>
 				</div>

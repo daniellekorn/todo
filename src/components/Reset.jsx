@@ -4,7 +4,7 @@ function Reset(props) {
 	return (
 		<Fragment>
 			<input
-				class="btn btn-primary"
+				className="btn btn-primary col-md-1"
 				type="reset"
 				value="Reset"
 				onClick={props.refreshPage}

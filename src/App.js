@@ -39,16 +39,29 @@ class App extends React.Component {
 		});
 	};
 
-	addTodo = (title) => {
-		const newTodo = {
-			id: uuid(),
-			title: title,
-			completed: false,
-		};
-		this.setState({
-			todos: [...this.state.todos, newTodo],
+	// addTodo = (title) => {
+
+	// 	// const newTodo = {
+	// 	// 	id: uuid(),
+	// 	// 	title: title,
+	// 	// 	completed: false,
+	// 	// };
+	// 	// this.setState({
+	// 	// 	todos: [...this.state.todos, newTodo],
+	// 	// });
+	// 	console.log(this.state.todos);
+	// };
+
+	postTodo = (title) => {
+		fetch("http://localhost:5000/", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				title: title,
+			}),
 		});
-		console.log(this.state.todos);
 	};
 
 	refreshPage = () => {
@@ -59,7 +72,7 @@ class App extends React.Component {
 		return (
 			<div className="text-center row">
 				<div className="col-md-12 justify-items-center">
-					<AddTodo addTodo={this.addTodo}></AddTodo>
+					<AddTodo postTodo={this.postTodo}></AddTodo>
 					<Reset refreshPage={this.refreshPage}></Reset>
 				</div>
 				<div className="col-md-6">

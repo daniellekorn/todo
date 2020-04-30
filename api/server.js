@@ -2,12 +2,19 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const key = require("./key");
-const app = express();
+const bodyParser = require("body-parser");
+const { v4: uuidv4 } = require("uuid");
 
+const app = express();
 const PORT = 5000;
 app.use(express.static(path.join(__dirname, "..", "client", "public")));
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cors());
+app.listen(PORT, () => {
+	console.log(`Listening at http://localhost:${PORT}`);
+	console.log("Press Ctrl+C to quit.");
+});
 
 //Mongo DB
 const MongoClient = require("mongodb").MongoClient;
@@ -37,7 +44,13 @@ app.get("/", (req, res) => {
 		});
 });
 
-app.listen(PORT, () => {
-	console.log(`Listening at http://localhost:${PORT}`);
-	console.log("Press Ctrl+C to quit.");
+app.post("/", (req, res) => {
+	const collection = client.db("todos").collection("user1");
+	console.log(req.body);
+	collection.insertOne({
+		id: uuidv4(),
+		title: req.body.title,
+		completed: false,
+	});
+	console.log("success");
 });

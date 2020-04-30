@@ -4,7 +4,6 @@ import Header from "./components/Header";
 import Todos from "./components/Todos";
 import AddTodo from "./components/AddTodo";
 import Reset from "./components/Reset";
-import { v4 as uuid } from "uuid";
 
 class App extends React.Component {
 	constructor(props) {
@@ -25,17 +24,6 @@ class App extends React.Component {
 		return data;
 	}
 
-	toggleComplete = (id) => {
-		this.setState({
-			todos: this.state.todos.map((todo) => {
-				if (todo.id === id) {
-					todo.completed = !todo.completed;
-				}
-				return todo;
-			}),
-		});
-	};
-
 	delTodo = (id) => {
 		this.setState({
 			todos: [...this.state.todos.filter((todo) => todo.id !== id)],
@@ -53,6 +41,17 @@ class App extends React.Component {
 			}),
 		});
 		this.getData();
+	};
+
+	toggleComplete = (id) => {
+		this.setState({
+			todos: this.state.todos.map((todo) => {
+				if (todo.id === id) {
+					todo.completed = !todo.completed;
+				}
+				return todo;
+			}),
+		});
 	};
 
 	refreshPage = () => {

@@ -15,7 +15,6 @@ class AddTodo extends React.Component {
 	onSubmit = (e) => {
 		e.preventDefault();
 		this.props.postTodo(this.state.title);
-		// this.props.addTodo(this.state.title);
 		this.setState({ title: "" });
 	};
 

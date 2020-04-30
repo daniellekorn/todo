@@ -51,16 +51,6 @@ class App extends React.Component {
 		});
 	};
 
-	done = () => {
-		const doneArray = this.state.todos.filter((todo) => todo.completed);
-		return doneArray;
-	};
-
-	notDone = () => {
-		const doneArray = this.state.todos.filter((todo) => !todo.completed);
-		return doneArray;
-	};
-
 	addTodo = (title) => {
 		const newTodo = {
 			id: uuid(),
@@ -82,7 +72,7 @@ class App extends React.Component {
 				<div className="col-md-6">
 					<Header></Header>
 					<Todos
-						todos={this.notDone()}
+						todos={this.state.todos.filter((todo) => !todo.completed)}
 						toggleComplete={this.toggleComplete}
 						delTodo={this.delTodo}
 					></Todos>
@@ -90,7 +80,7 @@ class App extends React.Component {
 				<div className="col-md-6">
 					<h1>Done</h1>
 					<Todos
-						todos={this.done()}
+						todos={this.state.todos.filter((todo) => todo.completed)}
 						toggleComplete={this.toggleComplete}
 						delTodo={this.delTodo}
 					></Todos>

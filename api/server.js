@@ -29,7 +29,7 @@ client.connect((err) => {
 	}
 });
 
-app.get("/todo", (req, res) => {
+app.get("/", (req, res) => {
 	const collection = client.db("todos").collection("user1");
 	collection
 		.find()

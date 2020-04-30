@@ -39,14 +39,13 @@ app.get("/", (req, res) => {
 	collection
 		.find()
 		.toArray()
-		.then((searches) => {
-			res.send(searches);
+		.then((todoItems) => {
+			res.send(todoItems);
 		});
 });
 
 app.post("/", (req, res) => {
 	const collection = client.db("todos").collection("user1");
-	console.log(req.body);
 	collection.insertOne({
 		id: uuidv4(),
 		title: req.body.title,

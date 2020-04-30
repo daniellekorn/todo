@@ -10,14 +10,19 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			todos: [],
+			todos: [
+				{
+					id: 1,
+					title: "Example",
+					completed: false,
+				},
+			],
 		};
 	}
 
 	async componentDidMount() {
 		const response = await fetch(`http://localhost:5000`);
 		const data = await response.json();
-		console.log(data);
 		this.setState({ todos: data });
 		return data;
 	}
@@ -38,19 +43,6 @@ class App extends React.Component {
 			todos: [...this.state.todos.filter((todo) => todo.id !== id)],
 		});
 	};
-
-	// addTodo = (title) => {
-
-	// 	// const newTodo = {
-	// 	// 	id: uuid(),
-	// 	// 	title: title,
-	// 	// 	completed: false,
-	// 	// };
-	// 	// this.setState({
-	// 	// 	todos: [...this.state.todos, newTodo],
-	// 	// });
-	// 	console.log(this.state.todos);
-	// };
 
 	postTodo = (title) => {
 		fetch("http://localhost:5000/", {

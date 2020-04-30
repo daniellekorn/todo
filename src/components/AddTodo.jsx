@@ -20,12 +20,12 @@ class AddTodo extends React.Component {
 
 	render() {
 		return (
-			<form onSubmit={this.onSubmit}>
+			<form onSubmit={this.onSubmit} className="col-md-10">
 				<input
+					className="input-large add-todo"
 					type="text"
 					name="title"
 					placeholder="Add Todo ..."
-					className="w-100"
 					value={this.state.title}
 					onChange={this.onChange}
 				/>

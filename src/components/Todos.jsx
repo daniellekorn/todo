@@ -1,5 +1,4 @@
 import React from "react";
-import "./Todos.css";
 import TodoItem from "./TodoItem";
 import PropTypes from "prop-types";
 

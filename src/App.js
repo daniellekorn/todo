@@ -3,6 +3,7 @@ import "./App.css";
 import Header from "./components/Header";
 import Todos from "./components/Todos";
 import AddTodo from "./components/AddTodo";
+import Reset from "./components/Reset";
 import { v4 as uuid } from "uuid";
 
 class App extends React.Component {
@@ -63,11 +64,16 @@ class App extends React.Component {
 		console.log(this.state.todos);
 	};
 
+	refreshPage = () => {
+		this.setState({ todos: [] });
+	};
+
 	render() {
 		return (
 			<div className="text-center row">
-				<div className="col-md-12">
+				<div className="col-md-12 justify-items-center">
 					<AddTodo addTodo={this.addTodo}></AddTodo>
+					<Reset refreshPage={this.refreshPage}></Reset>
 				</div>
 				<div className="col-md-6">
 					<Header></Header>

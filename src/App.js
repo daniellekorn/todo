@@ -1,6 +1,8 @@
 import React from "react";
 import "./App.css";
+import Header from "./components/Header";
 import Todos from "./components/Todos";
+import AddTodo from "./components/AddTodo";
 
 class App extends React.Component {
 	constructor(props) {
@@ -43,11 +45,26 @@ class App extends React.Component {
 		});
 	};
 
+	addTodo = (title) => {
+		const newTodo = {
+			id: 4,
+			title: title,
+			completed: false,
+		};
+		this.setState({
+			todos: [...this.state.todos, newTodo],
+		});
+		console.log(this.state.todos);
+	};
+
 	render() {
 		return (
 			<div className="text-center row">
+				<div className="col-md-12">
+					<Header></Header>
+					<AddTodo addTodo={this.addTodo}></AddTodo>
+				</div>
 				<div className="col-md-6">
-					<h1>To-Do</h1>
 					<Todos
 						todos={this.state.todos}
 						toggleComplete={this.toggleComplete}

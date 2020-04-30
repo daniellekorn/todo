@@ -25,6 +25,11 @@ class App extends React.Component {
 					title: "Take out the trash",
 					completed: false,
 				},
+				{
+					id: uuid(),
+					title: "Exercise",
+					completed: true,
+				},
 			],
 		};
 	}
@@ -46,6 +51,16 @@ class App extends React.Component {
 		});
 	};
 
+	done = () => {
+		const doneArray = this.state.todos.filter((todo) => todo.completed);
+		return doneArray;
+	};
+
+	notDone = () => {
+		const doneArray = this.state.todos.filter((todo) => !todo.completed);
+		return doneArray;
+	};
+
 	addTodo = (title) => {
 		const newTodo = {
 			id: uuid(),
@@ -62,12 +77,20 @@ class App extends React.Component {
 		return (
 			<div className="text-center row">
 				<div className="col-md-12">
-					<Header></Header>
 					<AddTodo addTodo={this.addTodo}></AddTodo>
 				</div>
 				<div className="col-md-6">
+					<Header></Header>
 					<Todos
-						todos={this.state.todos}
+						todos={this.notDone()}
+						toggleComplete={this.toggleComplete}
+						delTodo={this.delTodo}
+					></Todos>
+				</div>
+				<div className="col-md-6">
+					<h1>Done</h1>
+					<Todos
+						todos={this.done()}
 						toggleComplete={this.toggleComplete}
 						delTodo={this.delTodo}
 					></Todos>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import Todos from "./components/Todos";
@@ -9,7 +9,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			todos: [],
+			todos: null,
 		};
 	}
 
@@ -65,22 +65,28 @@ class App extends React.Component {
 					<AddTodo postTodo={this.postTodo}></AddTodo>
 					<Reset refreshPage={this.refreshPage}></Reset>
 				</div>
-				<div className="col-md-6">
-					<Header></Header>
-					<Todos
-						todos={this.state.todos.filter((todo) => !todo.completed)}
-						toggleComplete={this.toggleComplete}
-						delTodo={this.delTodo}
-					></Todos>
-				</div>
-				<div className="col-md-6">
-					<h1>Done</h1>
-					<Todos
-						todos={this.state.todos.filter((todo) => todo.completed)}
-						toggleComplete={this.toggleComplete}
-						delTodo={this.delTodo}
-					></Todos>
-				</div>
+				<Fragment>
+					{this.state.todos && (
+						<Fragment>
+							<div className="col-md-6">
+								<Header></Header>
+								<Todos
+									todos={this.state.todos.filter((todo) => !todo.completed)}
+									toggleComplete={this.toggleComplete}
+									delTodo={this.delTodo}
+								></Todos>
+							</div>
+							<div className="col-md-6">
+								<h1>Done</h1>
+								<Todos
+									todos={this.state.todos.filter((todo) => todo.completed)}
+									toggleComplete={this.toggleComplete}
+									delTodo={this.delTodo}
+								></Todos>
+							</div>
+						</Fragment>
+					)}
+				</Fragment>
 			</div>
 		);
 	}

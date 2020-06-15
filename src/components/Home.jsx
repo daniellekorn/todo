@@ -3,6 +3,7 @@ import Header from "./Header";
 import Todos from "./Todos";
 import AddTodo from "./AddTodo";
 import Reset from "./Reset";
+import axios from "axios";
 
 const Home = () => {
   const [todos, setTodos] = useState([]);
@@ -12,14 +13,16 @@ const Home = () => {
   }, []);
 
   const getData = async () => {
-    const response = await fetch(`http://localhost:5000`);
+    const response = await axios.get(`http://localhost:5000`, {
+      withCredentials: true,
+    });
     const data = await response.json();
-    setTodos([data]);
+    setTodos(data);
     return data;
   };
 
   const delTodo = (id) => {
-    setTodos([...todos.filter((todo) => todo.id !== id)]);
+    setTodos([...this.state.todos.filter((todo) => todo.id !== id)]);
   };
 
   const postTodo = (title) => {
@@ -45,7 +48,7 @@ const Home = () => {
     //     return todo;
     //   }),
     // });
-    return false;
+    return true;
   };
 
   const refreshPage = () => {

@@ -31,9 +31,7 @@ app.use((req, res, next) => {
   // Get auth token from the cookies
   const authToken = req.cookies["access_token"];
   console.log(authToken);
-  // Inject the user to the request
-  //set authToken in mongoDB for user and then pull it below to check in req.user
-  // req.user = authTokens[authToken];
+  req.user = collection.findOne({ authToken: authToken });
 
   next();
 });
@@ -129,8 +127,11 @@ app.post("/login", (req, res) => {
   if (user) {
     const authToken = generateAuthToken();
 
-    // // Store authentication token
-    // authTokens[authToken] = user;
+    // Store authentication token in db
+    collection.updateOne(
+      { email: email, password: hashedPassword },
+      { $set: { authToken } }
+    );
 
     // Setting the auth token in cookies
     res.cookie("AuthToken", authToken);

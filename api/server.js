@@ -1,9 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const key = require("./key");
+const uri = require("./key");
 const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
+const crypto = require("crypto");
 
 const app = express();
 const PORT = 5000;
@@ -19,7 +20,6 @@ app.listen(PORT, () => {
 //Mongo DB
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
-const uri = `mongodb+srv://eliaye:${key}@cluster0-endtr.mongodb.net/test?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -35,7 +35,7 @@ client.connect((err) => {
 });
 
 app.get("/", (req, res) => {
-  const collection = client.db("todos").collection("user1");
+  // const collection = client.db("todo").collection("user1");
   collection
     .find()
     .toArray()
@@ -45,11 +45,47 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  const collection = client.db("todos").collection("user1");
+  // const collection = client.db("todo").collection("user1");
   collection.insertOne({
     id: uuidv4(),
     title: req.body.title,
     completed: false,
   });
   console.log("success");
+});
+
+const getHashedPassword = (password) => {
+  const sha256 = crypto.createHash("sha256");
+  const hash = sha256.update(password).digest("base64");
+  return hash;
+};
+
+app.post("/signup", (req, res) => {
+  const { email, first, last, password, confirm } = req.body;
+  const collection = client.db("todo").collection("users");
+
+  // Check if the password and confirm password fields match
+  if (password === confirm) {
+    // Check if user with the same email is also registered
+    // if (collection.find({ email: email })) {
+    //   console.log("already exists");
+    //   res.send("already exists");
+    // }
+
+    const hashedPassword = getHashedPassword(password);
+
+    // Store user into the database if you are using one
+    collection.insertOne({
+      first,
+      last,
+      email,
+      password: hashedPassword,
+    });
+    console.log("success");
+
+    res.send("yay");
+  } else {
+    console.log("nope");
+    res.send("nope");
+  }
 });

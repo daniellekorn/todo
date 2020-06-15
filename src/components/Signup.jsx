@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +12,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +49,33 @@ const useStyles = makeStyles((theme) => ({
 
 const Signup = () => {
   const classes = useStyles();
+  const [first, setFirst] = useState("");
+  const [email, setEmail] = useState("");
+  const [last, setLast] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+
+  const handleOnChange = (event, callback) => {
+    callback(event.target.value);
+  };
+
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+    addUser();
+  };
+
+  const addUser = async () => {
+    const newUser = {
+      first,
+      last,
+      email,
+      password,
+      confirm,
+    };
+    const response = await axios.post(`http://localhost:5000/signup`, newUser);
+    console.log(response);
+    return response;
+  };
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -61,7 +89,13 @@ const Signup = () => {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <form className={classes.form} noValidate>
+          <form
+            className={classes.form}
+            noValidate
+            onSubmit={(event) => {
+              handleOnSubmit(event);
+            }}
+          >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -72,6 +106,8 @@ const Signup = () => {
                   fullWidth
                   id="firstName"
                   label="First Name"
+                  value={first}
+                  onChange={(event) => handleOnChange(event, setFirst)}
                   autoFocus
                 />
               </Grid>
@@ -84,6 +120,8 @@ const Signup = () => {
                   label="Last Name"
                   name="lastName"
                   autoComplete="lname"
+                  value={last}
+                  onChange={(event) => handleOnChange(event, setLast)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -95,6 +133,8 @@ const Signup = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  value={email}
+                  onChange={(event) => handleOnChange(event, setEmail)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -107,6 +147,22 @@ const Signup = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => handleOnChange(event, setPassword)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="confirm"
+                  label="Confirm password"
+                  type="confirm"
+                  id="confirm"
+                  autoComplete="confirm-password"
+                  value={confirm}
+                  onChange={(event) => handleOnChange(event, setConfirm)}
                 />
               </Grid>
               <Grid item xs={12}>

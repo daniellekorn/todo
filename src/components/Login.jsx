@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Signup from "./Signup";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,6 +50,27 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = () => {
   const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleOnChange = (event, callback) => {
+    callback(event.target.value);
+  };
+
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+    loginUser();
+  };
+
+  const loginUser = async () => {
+    const user = {
+      email,
+      password,
+    };
+    const response = await axios.post(`http://localhost:5000/login`, user);
+    console.log(response);
+    return response;
+  };
 
   return (
     <Router>
@@ -76,7 +98,11 @@ const Login = () => {
                 <Typography component="h1" variant="h5">
                   Login
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form
+                  className={classes.form}
+                  noValidate
+                  onSubmit={(event) => handleOnSubmit(event)}
+                >
                   <TextField
                     variant="outlined"
                     margin="normal"
@@ -87,6 +113,8 @@ const Login = () => {
                     name="email"
                     autoComplete="email"
                     autoFocus
+                    value={email}
+                    onChange={(event) => handleOnChange(event, setEmail)}
                   />
                   <TextField
                     variant="outlined"
@@ -98,6 +126,8 @@ const Login = () => {
                     type="password"
                     id="password"
                     autoComplete="current-password"
+                    value={password}
+                    onChange={(event) => handleOnChange(event, setPassword)}
                   />
                   <FormControlLabel
                     control={<Checkbox value="remember" color="primary" />}

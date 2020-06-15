@@ -60,6 +60,10 @@ const getHashedPassword = (password) => {
   return hash;
 };
 
+const generateAuthToken = () => {
+  return crypto.randomBytes(30).toString("hex");
+};
+
 app.post("/signup", (req, res) => {
   const { email, first, last, password, confirm } = req.body;
   const collection = client.db("todo").collection("users");
@@ -87,5 +91,27 @@ app.post("/signup", (req, res) => {
   } else {
     console.log("nope");
     res.send("nope");
+  }
+});
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  const hashedPassword = getHashedPassword(password);
+  const collection = client.db("todo").collection("users");
+
+  const user = collection.findOne({ email: email, password: hashedPassword });
+
+  if (user) {
+    const authToken = generateAuthToken();
+
+    // // Store authentication token
+    // authTokens[authToken] = user;
+
+    // Setting the auth token in cookies
+    res.cookie("AuthToken", authToken);
+    res.send(authToken);
+    // Redirect user to the protected page
+  } else {
+    res.send("Invalid login information");
   }
 });

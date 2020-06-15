@@ -12,8 +12,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.listen(PORT, () => {
-	console.log(`Listening at http://localhost:${PORT}`);
-	console.log("Press Ctrl+C to quit.");
+  console.log(`Listening at http://localhost:${PORT}`);
+  console.log("Press Ctrl+C to quit.");
 });
 
 //Mongo DB
@@ -21,35 +21,35 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 const uri = `mongodb+srv://eliaye:${key}@cluster0-endtr.mongodb.net/test?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
 client.connect((err) => {
-	if (!err) {
-		console.log("Mongodb connected successfully");
-	} else {
-		console.log(err);
-		client.close();
-	}
+  if (!err) {
+    console.log("Mongodb connected successfully");
+  } else {
+    console.log(err);
+    client.close();
+  }
 });
 
 app.get("/", (req, res) => {
-	const collection = client.db("todos").collection("user1");
-	collection
-		.find()
-		.toArray()
-		.then((todoItems) => {
-			res.send(todoItems);
-		});
+  const collection = client.db("todos").collection("user1");
+  collection
+    .find()
+    .toArray()
+    .then((todoItems) => {
+      res.send(todoItems);
+    });
 });
 
 app.post("/", (req, res) => {
-	const collection = client.db("todos").collection("user1");
-	collection.insertOne({
-		id: uuidv4(),
-		title: req.body.title,
-		completed: false,
-	});
-	console.log("success");
+  const collection = client.db("todos").collection("user1");
+  collection.insertOne({
+    id: uuidv4(),
+    title: req.body.title,
+    completed: false,
+  });
+  console.log("success");
 });

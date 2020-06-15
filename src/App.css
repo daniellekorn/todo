@@ -1,12 +1,12 @@
 body {
-	background-color: rgb(255, 255, 255);
-	padding-top: 50px;
+  margin: 0;
+  padding: 0;
 }
 
 h1 {
-	color: blue;
+  color: blue;
 }
 
 .add-todo {
-	width: 75%;
+  width: 75%;
 }

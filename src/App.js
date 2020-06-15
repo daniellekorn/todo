@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import "./App.css";
 import Home from "./components/Home";
 import Login from "./components/Login";
@@ -6,8 +6,17 @@ import Login from "./components/Login";
 const App = () => {
   const [user, setUser] = useState(false);
 
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      setUser(true);
+    } else {
+      setUser(false);
+    }
+  }, []);
+
   const currentUser = (user) => {
-    setUser(user);
+    localStorage.setItem("user", user);
+    setUser(true);
   };
 
   return (

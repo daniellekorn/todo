@@ -5,12 +5,14 @@ const uri = require("./key");
 const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
+var cookieParser = require("cookie-parser");
 
 const app = express();
 const PORT = 5000;
 app.use(express.static(path.join(__dirname, "..", "client", "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(cors());
 app.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}`);
@@ -25,6 +27,17 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
+app.use((req, res, next) => {
+  // Get auth token from the cookies
+  const authToken = req.cookies["access_token"];
+  console.log(authToken);
+  // Inject the user to the request
+  //set authToken in mongoDB for user and then pull it below to check in req.user
+  // req.user = authTokens[authToken];
+
+  next();
+});
+
 client.connect((err) => {
   if (!err) {
     console.log("Mongodb connected successfully");
@@ -34,7 +47,18 @@ client.connect((err) => {
   }
 });
 
-app.get("/", (req, res) => {
+const requireAuth = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.send({
+      message: "Please login to continue",
+      messageClass: "alert-danger",
+    });
+  }
+};
+
+app.get("/", requireAuth, (req, res) => {
   // const collection = client.db("todo").collection("user1");
   collection
     .find()
@@ -44,7 +68,7 @@ app.get("/", (req, res) => {
     });
 });
 
-app.post("/", (req, res) => {
+app.post("/", requireAuth, (req, res) => {
   // const collection = client.db("todo").collection("user1");
   collection.insertOne({
     id: uuidv4(),
@@ -54,6 +78,7 @@ app.post("/", (req, res) => {
   console.log("success");
 });
 
+//All login / auth stuff
 const getHashedPassword = (password) => {
   const sha256 = crypto.createHash("sha256");
   const hash = sha256.update(password).digest("base64");

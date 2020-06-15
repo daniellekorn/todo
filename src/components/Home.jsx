@@ -14,12 +14,12 @@ const Home = () => {
   const getData = async () => {
     const response = await fetch(`http://localhost:5000`);
     const data = await response.json();
-    setTodos(data);
+    setTodos([data]);
     return data;
   };
 
   const delTodo = (id) => {
-    setTodos([...this.state.todos.filter((todo) => todo.id !== id)]);
+    setTodos([...todos.filter((todo) => todo.id !== id)]);
   };
 
   const postTodo = (title) => {
@@ -37,22 +37,29 @@ const Home = () => {
 
   //NEED TO MAKE THIS UPDATE THE INFO IN DB
   const toggleComplete = (id) => {
-    this.setState({
-      todos: this.state.todos.map((todo) => {
-        if (todo.id === id) {
-          todo.completed = !todo.completed;
-        }
-        return todo;
-      }),
-    });
+    // this.setState({
+    //   todos: todos.map((todo) => {
+    //     if (todo.id === id) {
+    //       todo.completed = !todo.completed;
+    //     }
+    //     return todo;
+    //   }),
+    // });
+    return false;
   };
 
   const refreshPage = () => {
     setTodos([]);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
+
   return (
     <div className="text-center row">
+      <button onClick={(event) => handleLogout(event)}>Logout</button>
       <div className="col-md-12 justify-items-center">
         <AddTodo postTodo={postTodo} />
         <Reset refreshPage={refreshPage} />

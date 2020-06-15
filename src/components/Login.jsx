@@ -14,6 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Signup from "./Signup";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = () => {
+const Login = (props) => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -69,6 +70,10 @@ const Login = () => {
     };
     const response = await axios.post(`http://localhost:5000/login`, user);
     console.log(response);
+    if (response.status === 200) {
+      Cookies.set("access_token", response.data);
+      props.currentUser(user);
+    }
     return response;
   };
 

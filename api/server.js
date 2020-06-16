@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
 var cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 const PORT = 5000;
@@ -73,7 +74,7 @@ client.connect((err) => {
 //   }
 // };
 
-app.get("/todos", (req, res) => {
+app.get("/todos", authenticateToken, (req, res) => {
   const collection = client.db("todo").collection("todos");
   collection
     //find all docs with a userId saved as same id of user
@@ -84,7 +85,7 @@ app.get("/todos", (req, res) => {
     });
 });
 
-app.post("/todos", (req, res) => {
+app.post("/todos", authenticateToken, (req, res) => {
   const collection = client.db("todo").collection("todos");
   collection
     .insertOne({
@@ -157,3 +158,16 @@ app.post("/login", async (req, res) => {
       }
     });
 });
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    console.log(err);
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}

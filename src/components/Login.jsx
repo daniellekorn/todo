@@ -15,10 +15,16 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Signup from "./Signup";
 import axios from "axios";
 import Cookies from "js-cookie";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
+  },
+  error: {
+    width: "100%",
+    marginTop: theme.spacing(2),
+    fontSize: 12,
   },
   image: {
     backgroundImage: "url('/notebook.jpg')",
@@ -53,6 +59,7 @@ const Login = (props) => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState(false);
 
   const handleOnChange = (event, callback) => {
     callback(event.target.value);
@@ -68,13 +75,15 @@ const Login = (props) => {
       email,
       password,
     };
-    const response = await axios.post(`http://localhost:5000/login`, user);
-    console.log(response);
-    if (response.status === 200) {
-      Cookies.set("access_token", response.data);
-      props.currentUser(user);
+    try {
+      const response = await axios.post(`http://localhost:5000/login`, user);
+      if (response.status === 200) {
+        Cookies.set("access_token", response.data);
+        props.currentUser(user);
+      }
+    } catch (err) {
+      setLoginError(true);
     }
-    return response;
   };
 
   return (
@@ -160,6 +169,13 @@ const Login = (props) => {
                     </Grid>
                   </Grid>
                 </form>
+                <div>
+                  {loginError && (
+                    <Alert className={classes.error} severity="error">
+                      Login details are incorrect. Double check and try again!
+                    </Alert>
+                  )}
+                </div>
               </div>
             </Grid>
           </Grid>

@@ -112,7 +112,6 @@ app.post("/login", async (req, res) => {
   const hashedPassword = getHashedPassword(password);
   const collection = client.db("todo").collection("users");
 
-  let user;
   await collection
     .findOne({ email: email, password: hashedPassword })
     .then((data) => {

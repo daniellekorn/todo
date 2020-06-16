@@ -15,24 +15,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
 app.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}`);
   console.log("Press Ctrl+C to quit.");
 });
-
-// app.use(function (req, res, next) {
-//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-//   );
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "X-Requested-With,content-type"
-//   );
-//   res.setHeader("Access-Control-Allow-Credentials", true);
-//   next();
-// });
 
 //Mongo DB
 const MongoClient = require("mongodb").MongoClient;
@@ -51,29 +50,7 @@ client.connect((err) => {
   }
 });
 
-// app.use((req, res, next) => {
-//   // Get auth token from the cookies
-//   const collection = client.db("todo").collection("users");
-//   const authToken = req.cookies["access_token"];
-//   console.log(authToken);
-//   collection.findOne({ authToken: authToken }).then((data) => {
-//     data ? (req.user = data) : (req.user = false);
-//   });
-//   next();
-// });
-
-// const requireAuth = (req, res, next) => {
-//   if (req.user) {
-//     console.log("user exists");
-//     next();
-//   } else {
-//     res.send({
-//       message: "Please login to continue",
-//       messageClass: "alert-danger",
-//     });
-//   }
-// };
-
+// Routes
 app.get("/todos", authenticateToken, (req, res) => {
   const collection = client.db("todo").collection("todos");
   collection
@@ -159,15 +136,16 @@ app.post("/login", async (req, res) => {
     });
 });
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.sendStatus(401);
+// work on this later https://github.com/WebDevSimplified/JWT-Authentication/blob/master/server.js
+// function authenticateToken(req, res, next) {
+//   const authHeader = req.headers["authorization"];
+//   const token = authHeader && authHeader.split(" ")[1];
+//   if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    console.log(err);
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
+//   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//     console.log(err);
+//     if (err) return res.sendStatus(403);
+//     req.user = user;
+//     next();
+//   });
+// }

@@ -13,12 +13,16 @@ const Home = () => {
   }, []);
 
   const getData = async () => {
-    const response = await axios.get(`http://localhost:5000`, {
-      withCredentials: true,
-    });
-    const data = await response.json();
-    setTodos(data);
-    return data;
+    try {
+      const data = await axios.get(`http://localhost:5000`, {
+        withCredentials: true,
+      });
+      setTodos([data]);
+      return data;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
   };
 
   const delTodo = (id) => {
@@ -56,6 +60,7 @@ const Home = () => {
   };
 
   const handleLogout = () => {
+    //remove token here?
     localStorage.removeItem("user");
     window.location.reload();
   };

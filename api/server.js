@@ -19,21 +19,26 @@ app.listen(PORT, () => {
   console.log("Press Ctrl+C to quit.");
 });
 
+// app.use(function (req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "X-Requested-With,content-type"
+//   );
+//   res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// });
+
 //Mongo DB
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
-
-app.use((req, res, next) => {
-  // Get auth token from the cookies
-  const authToken = req.cookies["access_token"];
-  console.log(authToken);
-  req.user = collection.findOne({ authToken: authToken });
-
-  next();
 });
 
 client.connect((err) => {
@@ -45,20 +50,33 @@ client.connect((err) => {
   }
 });
 
-const requireAuth = (req, res, next) => {
-  if (req.user) {
-    next();
-  } else {
-    res.send({
-      message: "Please login to continue",
-      messageClass: "alert-danger",
-    });
-  }
-};
+// app.use((req, res, next) => {
+//   // Get auth token from the cookies
+//   const collection = client.db("todo").collection("users");
+//   const authToken = req.cookies["access_token"];
+//   console.log(authToken);
+//   collection.findOne({ authToken: authToken }).then((data) => {
+//     data ? (req.user = data) : (req.user = false);
+//   });
+//   next();
+// });
 
-app.get("/", requireAuth, (req, res) => {
-  // const collection = client.db("todo").collection("user1");
+// const requireAuth = (req, res, next) => {
+//   if (req.user) {
+//     console.log("user exists");
+//     next();
+//   } else {
+//     res.send({
+//       message: "Please login to continue",
+//       messageClass: "alert-danger",
+//     });
+//   }
+// };
+
+app.get("/todos", (req, res) => {
+  const collection = client.db("todo").collection("todos");
   collection
+    //find all docs with a userId saved as same id of user
     .find()
     .toArray()
     .then((todoItems) => {
@@ -66,25 +84,23 @@ app.get("/", requireAuth, (req, res) => {
     });
 });
 
-app.post("/", requireAuth, (req, res) => {
-  // const collection = client.db("todo").collection("user1");
-  collection.insertOne({
-    id: uuidv4(),
-    title: req.body.title,
-    completed: false,
-  });
-  console.log("success");
+app.post("/todos", (req, res) => {
+  const collection = client.db("todo").collection("todos");
+  collection
+    .insertOne({
+      id: uuidv4(),
+      title: req.body.title,
+      completed: false,
+      //add userId field for one to many relationship
+      userId: 1,
+    })
+    .then((data) => console.log(data));
 });
 
-//All login / auth stuff
 const getHashedPassword = (password) => {
   const sha256 = crypto.createHash("sha256");
   const hash = sha256.update(password).digest("base64");
   return hash;
-};
-
-const generateAuthToken = () => {
-  return crypto.randomBytes(30).toString("hex");
 };
 
 app.post("/signup", (req, res) => {
@@ -93,51 +109,51 @@ app.post("/signup", (req, res) => {
 
   // Check if the password and confirm password fields match
   if (password === confirm) {
-    // Check if user with the same email is also registered
-    // if (collection.find({ email: email })) {
-    //   console.log("already exists");
-    //   res.send("already exists");
-    // }
-
+    //want to check here if already user with that password
     const hashedPassword = getHashedPassword(password);
 
     // Store user into the database if you are using one
-    collection.insertOne({
-      first,
-      last,
-      email,
-      password: hashedPassword,
-    });
-    console.log("success");
-
-    res.send("yay");
+    collection
+      .insertOne({
+        first,
+        last,
+        email,
+        password: hashedPassword,
+      })
+      .then((data) => {
+        console.log("success");
+        res.send(data);
+      });
   } else {
-    console.log("nope");
     res.send("nope");
   }
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const hashedPassword = getHashedPassword(password);
   const collection = client.db("todo").collection("users");
 
-  const user = collection.findOne({ email: email, password: hashedPassword });
+  let user;
+  await collection
+    .findOne({ email: email, password: hashedPassword })
+    .then((data) => {
+      if (data) {
+        const authToken = "testing";
 
-  if (user) {
-    const authToken = generateAuthToken();
+        // Store authentication token in db
+        collection.updateOne(
+          { email: email, password: hashedPassword },
+          { $set: { authToken } }
+        );
 
-    // Store authentication token in db
-    collection.updateOne(
-      { email: email, password: hashedPassword },
-      { $set: { authToken } }
-    );
-
-    // Setting the auth token in cookies
-    res.cookie("AuthToken", authToken);
-    res.send(authToken);
-    // Redirect user to the protected page
-  } else {
-    res.send("Invalid login information");
-  }
+        // Setting the auth token in cookies
+        res.cookie("AuthToken", authToken);
+        res.send(authToken);
+        // Redirect user to the protected page
+      } else {
+        res.status(400);
+        res.send("Invalid login information");
+      }
+    });
 });

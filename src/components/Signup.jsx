@@ -173,7 +173,7 @@ const Signup = () => {
                   fullWidth
                   name="confirm"
                   label="Confirm password"
-                  type="confirm"
+                  type="password"
                   id="confirm"
                   autoComplete="confirm-password"
                   value={confirm}

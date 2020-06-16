@@ -12,10 +12,16 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
+  },
+  success: {
+    width: "100%",
+    marginTop: theme.spacing(2),
+    fontSize: 12,
   },
   image: {
     backgroundImage: "url('/flowers.jpg')",
@@ -53,6 +59,8 @@ const Signup = () => {
   const [last, setLast] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleOnChange = (event, callback) => {
     callback(event.target.value);
@@ -71,9 +79,17 @@ const Signup = () => {
       password,
       confirm,
     };
-    const response = await axios.post(`http://localhost:5000/signup`, newUser);
-    console.log(response);
-    return response;
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/signup`,
+        newUser
+      );
+      setSuccess(true);
+      return response;
+    } catch (err) {
+      setSuccess(false);
+      setError(true);
+    }
   };
 
   return (
@@ -190,6 +206,22 @@ const Signup = () => {
               </Grid>
             </Grid>
           </form>
+          <div>
+            {success && (
+              <Alert className={classes.success} severity="success">
+                Profile successfully created. Log-in to start tracking your
+                tasks!
+              </Alert>
+            )}
+          </div>
+          <div>
+            {error && (
+              <Alert className={classes.success} severity="error">
+                There was an error creating your profile. Fill all required
+                fields and try again.
+              </Alert>
+            )}
+          </div>
         </div>
       </Grid>
     </Grid>

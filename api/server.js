@@ -16,16 +16,11 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
 app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
-  res.setHeader(
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header(
     "Access-Control-Allow-Headers",
-    "X-Requested-With,content-type"
+    "Origin, X-Requested-With, Content-Type, Accept"
   );
-  res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
 app.listen(PORT, () => {
@@ -51,7 +46,7 @@ client.connect((err) => {
 });
 
 // Routes
-app.get("/todos", authenticateToken, (req, res) => {
+app.get("/todos", (req, res) => {
   const collection = client.db("todo").collection("todos");
   collection
     //find all docs with a userId saved as same id of user
@@ -62,7 +57,7 @@ app.get("/todos", authenticateToken, (req, res) => {
     });
 });
 
-app.post("/todos", authenticateToken, (req, res) => {
+app.post("/todos", (req, res) => {
   const collection = client.db("todo").collection("todos");
   collection
     .insertOne({
@@ -84,26 +79,28 @@ const getHashedPassword = (password) => {
 app.post("/signup", (req, res) => {
   const { email, first, last, password, confirm } = req.body;
   const collection = client.db("todo").collection("users");
-
-  // Check if the password and confirm password fields match
   if (password === confirm) {
-    //want to check here if already user with that password
-    const hashedPassword = getHashedPassword(password);
-
-    // Store user into the database if you are using one
-    collection
-      .insertOne({
-        first,
-        last,
-        email,
-        password: hashedPassword,
-      })
-      .then((data) => {
-        console.log("success");
-        res.send(data);
-      });
+    if (email && first && last && password && confirm) {
+      //want to check here if already user with that password
+      const hashedPassword = getHashedPassword(password);
+      collection
+        .insertOne({
+          first,
+          last,
+          email,
+          password: hashedPassword,
+        })
+        .then((data) => {
+          console.log("success");
+          res.send(data);
+        });
+    } else {
+      res.status(400);
+      res.send("Error creating profile");
+    }
   } else {
-    res.send("nope");
+    res.status(400);
+    res.send("Error creating profile");
   }
 });
 

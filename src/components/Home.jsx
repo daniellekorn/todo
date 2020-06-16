@@ -4,6 +4,7 @@ import Todos from "./Todos";
 import AddTodo from "./AddTodo";
 import Reset from "./Reset";
 import axios from "axios";
+import Button from "@material-ui/core/Button";
 
 const Home = () => {
   const [todos, setTodos] = useState([]);
@@ -30,7 +31,7 @@ const Home = () => {
   };
 
   const postTodo = (title) => {
-    fetch("http://localhost:5000/", {
+    fetch("http://localhost:5000/todos", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +40,6 @@ const Home = () => {
         title: title,
       }),
     });
-    this.getData();
   };
 
   //NEED TO MAKE THIS UPDATE THE INFO IN DB
@@ -66,16 +66,20 @@ const Home = () => {
   };
 
   return (
-    <div className="text-center row">
-      <button onClick={(event) => handleLogout(event)}>Logout</button>
-      <div className="col-md-12 justify-items-center">
-        <AddTodo postTodo={postTodo} />
+    <div className="full-page">
+      <div className="stripe">
+        <Button variant="outlined" color="secondary" onClick={handleLogout}>
+          Logout
+        </Button>
         <Reset refreshPage={refreshPage} />
+        <div className="stripe">
+          <AddTodo postTodo={postTodo} className="float-right" />
+        </div>
       </div>
-      <Fragment>
+      <div className="flexible stripe">
         {todos && (
           <Fragment>
-            <div className="col-md-6">
+            <div className="half-col">
               <Header />
               <Todos
                 todos={todos.filter((todo) => !todo.completed)}
@@ -83,7 +87,7 @@ const Home = () => {
                 delTodo={delTodo}
               />
             </div>
-            <div className="col-md-6">
+            <div className="half-col">
               <h1>Done</h1>
               <Todos
                 todos={todos.filter((todo) => todo.completed)}
@@ -93,7 +97,7 @@ const Home = () => {
             </div>
           </Fragment>
         )}
-      </Fragment>
+      </div>
     </div>
   );
 };

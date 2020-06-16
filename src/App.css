@@ -1,12 +1,33 @@
 body {
-  margin: 0;
-  padding: 0;
+  /* background-image: url("/rainbow.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; */
 }
 
-h1 {
-  color: blue;
+.full-page {
+  background-color: lightblue;
+  height: 100vh;
+  width: 100vw;
 }
 
-.add-todo {
-  width: 75%;
+.flexible {
+  display: flex;
+  flex-direction: row;
 }
+
+.stripe {
+  width: 100%;
+}
+
+.half-col {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+/* @media screen and (max-width: 800px) {
+  .half-col {
+    width: 100% !important;
+    display: block;
+  }
+} */

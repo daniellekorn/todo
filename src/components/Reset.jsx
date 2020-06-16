@@ -1,16 +1,14 @@
 import React, { Fragment } from "react";
+import Button from "@material-ui/core/Button";
 
 function Reset(props) {
-	return (
-		<Fragment>
-			<input
-				className="btn btn-primary col-md-1"
-				type="reset"
-				value="Reset"
-				onClick={props.refreshPage}
-			></input>
-		</Fragment>
-	);
+  return (
+    <Fragment>
+      <Button variant="outlined" color="primary" onClick={props.refreshPage}>
+        Reset
+      </Button>
+    </Fragment>
+  );
 }
 
 export default Reset;
